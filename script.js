@@ -816,7 +816,43 @@ _Technology Partner: MOMO IT TECHNOLOGIES_`;
     showNetworkToast('⚠️ You are offline. Cached portfolio & contact info remain available!', 'offline');
   });
 
-  // D. 1-Tap Instagram Smart Follow Launcher (iOS, Android, Desktop)
+  // D. 1-Tap Instagram Smart Follow Launcher with Dynamic Status Feedback
+  const followBtn = document.getElementById("followBtn");
+  const followBtnText = document.getElementById("followBtnText");
+  const followBtnBadge = document.getElementById("followBtnBadge");
+  const statusEl = document.getElementById("status");
+
+  // Visual UI updater for Follow action
+  const setFollowedState = (isFollowed, showPing = false) => {
+    if (isFollowed) {
+      if (followBtn) {
+        followBtn.classList.remove('ig-btn-gradient');
+        followBtn.classList.add('bg-emerald-600', 'hover:bg-emerald-500', 'border', 'border-emerald-400/40');
+      }
+      if (followBtnText) followBtnText.textContent = 'Following @anand_fashion_studio_kdp';
+      if (followBtnBadge) {
+        followBtnBadge.textContent = '✓';
+        followBtnBadge.className = 'text-xs bg-white/30 px-1.5 py-0.5 rounded-full font-black';
+      }
+      if (statusEl) {
+        const pingDot = showPing ? '<span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>' : '<span class="inline-block w-2 h-2 rounded-full bg-emerald-400"></span>';
+        statusEl.innerHTML = `${pingDot}<span class="text-emerald-400 font-bold">Follow action triggered</span> <span class="text-slate-300">• Connected with Anand Fashion Studio!</span>`;
+      }
+      // Also update any other Instagram buttons on page
+      document.querySelectorAll('[data-action="instagram-follow"]').forEach((btn) => {
+        if (btn !== followBtn) {
+          const badge = btn.querySelector('span:last-child');
+          if (badge) badge.textContent = '✓ Following';
+        }
+      });
+    }
+  };
+
+  // Restore follow status if previously triggered
+  if (localStorage.getItem('afs_instagram_followed') === 'true') {
+    setFollowedState(true, false);
+  }
+
   const openInstagramProfile = (e) => {
     if (e && e.preventDefault) e.preventDefault();
     const username = 'anand_fashion_studio_kdp';
@@ -825,33 +861,44 @@ _Technology Partner: MOMO IT TECHNOLOGIES_`;
     const ua = (navigator.userAgent || navigator.vendor || window.opera || '').toLowerCase();
     const isMobile = /android|iphone|ipad|ipod/i.test(ua);
 
-    showNetworkToast('📸 Opening Instagram app... Tap the blue "Follow" button to connect!', 'info');
+    // Persist followed state and update UI
+    localStorage.setItem('afs_instagram_followed', 'true');
+    setFollowedState(true, true);
 
-    if (isMobile) {
-      const isAndroid = /android/i.test(ua);
-      const isIos = /iphone|ipad|ipod/i.test(ua);
+    showNetworkToast('✓ Follow action triggered! Opening Instagram to connect...', 'online');
 
-      if (isAndroid) {
-        // Android Intent directed at official Instagram app with fallback to web
-        const intentUrl = `intent://instagram.com/_u/${username}/#Intent;package=com.instagram.android;scheme=https;end`;
-        window.location.href = intentUrl;
-      } else if (isIos) {
-        // iOS Safari deep link with 600ms fallback to web URL
-        const start = Date.now();
-        window.location.href = appUri;
-        setTimeout(() => {
-          if (Date.now() - start < 1200) {
-            window.location.href = webUrl;
-          }
-        }, 600);
+    setTimeout(() => {
+      if (isMobile) {
+        const isAndroid = /android/i.test(ua);
+        const isIos = /iphone|ipad|ipod/i.test(ua);
+
+        if (isAndroid) {
+          // Android Intent directed at official Instagram app with fallback to web
+          const intentUrl = `intent://instagram.com/_u/${username}/#Intent;package=com.instagram.android;scheme=https;end`;
+          window.location.href = intentUrl;
+        } else if (isIos) {
+          // iOS Safari deep link with 600ms fallback to web URL
+          const start = Date.now();
+          window.location.href = appUri;
+          setTimeout(() => {
+            if (Date.now() - start < 1200) {
+              window.location.href = webUrl;
+            }
+          }, 600);
+        } else {
+          window.location.href = appUri;
+        }
       } else {
-        window.location.href = appUri;
+        // Desktop: Open clean web profile in new tab
+        window.open(webUrl, '_blank', 'noopener,noreferrer');
       }
-    } else {
-      // Desktop: Open clean web profile in new tab
-      window.open(webUrl, '_blank', 'noopener,noreferrer');
-    }
+    }, 250);
   };
+
+  // Exact Customer integration snippet:
+  followBtn?.addEventListener("click", () => {
+    if (statusEl) statusEl.textContent = "Follow action triggered";
+  });
 
   // Attach click listener to all 1-tap Instagram follow buttons & links
   document.querySelectorAll('[data-action="instagram-follow"]').forEach((btn) => {
