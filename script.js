@@ -825,6 +825,8 @@ _Technology Partner: MOMO IT TECHNOLOGIES_`;
     const ua = (navigator.userAgent || navigator.vendor || window.opera || '').toLowerCase();
     const isMobile = /android|iphone|ipad|ipod/i.test(ua);
 
+    showNetworkToast('📸 Opening Instagram app... Tap the blue "Follow" button to connect!', 'info');
+
     if (isMobile) {
       const isAndroid = /android/i.test(ua);
       const isIos = /iphone|ipad|ipod/i.test(ua);
