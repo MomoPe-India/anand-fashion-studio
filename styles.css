@@ -258,7 +258,8 @@ dialog#lightboxModal[open]::backdrop {
 .mobile-tab-btn.active .tab-icon-wrap {
   background-color: rgba(212, 175, 55, 0.15);
   color: var(--color-gold);
-  box-shadow: inset 0 0 12px rgba(212, 175, 55, 0.2);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  box-shadow: 0 0 14px rgba(212, 175, 55, 0.25);
 }
 
 .mobile-tab-btn.active .tab-indicator {
