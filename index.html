@@ -1418,8 +1418,10 @@
   </section>
 
   <!-- Location, Landmark Distance Guide & Map Section -->
-  <section id="contact" class="py-24 bg-brand-darker relative border-t border-brand-border">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <section id="contact" class="py-24 bg-brand-dark relative border-t border-brand-border overflow-hidden">
+    <div class="absolute -top-40 -left-40 w-96 h-96 bg-brand-gold/5 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         
         <!-- Contact Details & Landmark Guide -->
@@ -1504,18 +1506,16 @@
               </div>
             </div>
 
-            <!-- Official Website -->
+            <!-- Studio Walk-ins & Demos -->
             <div class="flex items-start gap-4">
               <div class="w-10 h-10 rounded-xl bg-brand-card border border-brand-border flex items-center justify-center text-brand-gold text-lg flex-shrink-0">
-                🌐
+                🤝
               </div>
               <div>
-                <h4 class="text-xs font-bold text-white uppercase tracking-wider">Official Website</h4>
-                <a href="https://anandfashionstudio.in" target="_blank" rel="noopener noreferrer" 
-                   class="text-xs sm:text-sm text-brand-gold hover:text-white font-semibold mt-0.5 inline-flex items-center gap-1.5 transition-colors">
-                  <span>anandfashionstudio.in</span>
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                </a>
+                <h4 class="text-xs font-bold text-white uppercase tracking-wider">Studio Walk-ins & Demos</h4>
+                <p class="text-xs sm:text-sm text-slate-300 mt-0.5 leading-relaxed">
+                  Walk-ins welcome! Touch and inspect physical album papers, examine wood/acrylic frame moldings, and customize packages with Anand.
+                </p>
               </div>
             </div>
 
@@ -1525,7 +1525,13 @@
                 ⏰
               </div>
               <div>
-                <h4 class="text-xs font-bold text-white uppercase tracking-wider">Hours</h4>
+                <div class="flex items-center gap-2">
+                  <h4 class="text-xs font-bold text-white uppercase tracking-wider">Hours</h4>
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[10px] font-semibold">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    Open 7 Days a Week
+                  </span>
+                </div>
                 <p class="text-xs sm:text-sm text-slate-300 mt-0.5">
                   Monday – Saturday: 9:00 AM – 9:00 PM | Sunday: 9:00 AM – 2:00 PM
                 </p>
@@ -1613,68 +1619,101 @@
         </a>
       </div>
 
-      <!-- Footer Columns -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+      <!-- Footer Columns: 4 Distinct Non-Duplicated Hubs -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
         
-        <!-- Brand Info with Logo -->
-        <div class="space-y-4 md:col-span-2">
+        <!-- Col 1: Brand Authority & Heritage -->
+        <div class="space-y-3">
           <div class="flex items-center gap-3">
-            <div class="w-12 h-12 rounded-full p-[1.5px] bg-gradient-to-tr from-brand-gold to-brand-ruby shadow-md">
+            <div class="w-11 h-11 rounded-full p-[1.5px] bg-gradient-to-tr from-brand-gold to-brand-ruby shadow-md flex-shrink-0">
               <img src="assets/logo.jpg" alt="AFS Studio Logo" class="w-full h-full rounded-full object-cover">
             </div>
             <div>
-              <span class="text-lg font-serif font-bold text-white block">
+              <span class="text-base font-serif font-bold text-white block">
                 Anand <span class="gold-metallic-text">Fashion Studio</span>
               </span>
               <span class="text-[10px] text-brand-gold font-semibold uppercase tracking-wider block">
-                Capturing Style & Moments • Est. 2010
+                Est. 2010 • Kadapa, AP
               </span>
             </div>
           </div>
-          <p class="text-slate-400 text-xs max-w-sm leading-relaxed">
-            Kadapa’s premier studio for traditional wedding cinematography, candid event photography, pre-wedding outdoor shoots, custom photo framing, and personalized gift merchandise since 2010.
+          <p class="text-slate-400 text-xs leading-relaxed">
+            Kadapa’s premier studio for traditional wedding cinematography, candid event photography, pre-wedding outdoor shoots, and custom photo framing.
           </p>
-          <div class="flex items-center gap-4 pt-1">
-            <a href="https://instagram.com/anand_fashion_studio_kdp" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-brand-gold transition-colors">
-              Instagram (@anand_fashion_studio_kdp)
-            </a>
-            <span>•</span>
-            <a href="https://www.reviewsmart.online/r/anand-fashion-studio-bf84" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-brand-gold transition-colors">
-              ReviewSmart AI Portal
-            </a>
+          <div class="pt-1 flex flex-wrap items-center gap-2">
+            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-brand-card border border-brand-border text-[11px] text-brand-gold font-medium">
+              ✓ 16+ Yrs Legacy
+            </span>
+            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-brand-card border border-brand-border text-[11px] text-slate-300 font-medium">
+              ⭐ 4.9 Rating
+            </span>
           </div>
         </div>
 
-        <!-- Quick Links -->
+        <!-- Col 2: Studio Services Catalog -->
         <div class="space-y-2">
-          <h4 class="text-white font-bold text-xs uppercase tracking-wider">Quick Navigation</h4>
-          <ul class="space-y-1.5">
-            <li><a href="#services" class="hover:text-brand-gold">Photo Framing (In-Studio)</a></li>
-            <li><a href="#wedding-estimator" class="hover:text-brand-gold">💍 Wedding Cost Estimator</a></li>
-            <li><a href="#business-card" class="hover:text-brand-gold">💳 Download Visiting Card</a></li>
-            <li><a href="#portfolio" class="hover:text-brand-gold">Portfolio Gallery</a></li>
-            <li><a href="#reviews" class="hover:text-brand-gold">ReviewSmart AI Assistant</a></li>
-            <li><a href="#contact" class="hover:text-brand-gold">Kadapa Landmark Directions</a></li>
+          <h4 class="text-white font-bold text-xs uppercase tracking-wider">Studio Services</h4>
+          <ul class="space-y-1.5 text-xs text-slate-400">
+            <li><a href="#services" class="hover:text-brand-gold transition-colors">🎥 4K Wedding Cinematography</a></li>
+            <li><a href="#services" class="hover:text-brand-gold transition-colors">📸 Candid & Traditional Shoots</a></li>
+            <li><a href="#services" class="hover:text-brand-gold transition-colors">🌄 Pre-Wedding Outdoor Sessions</a></li>
+            <li><a href="#services" class="hover:text-brand-gold transition-colors">🖼️ Custom Photo Framing Studio</a></li>
+            <li><a href="#services" class="hover:text-brand-gold transition-colors">🎁 Personalized Mugs & Gifts</a></li>
+            <li><a href="#services" class="hover:text-brand-gold transition-colors">🪪 Passport & Studio Portraits</a></li>
           </ul>
         </div>
 
-        <!-- Kadapa Local Hub -->
+        <!-- Col 3: Quick Navigation & Tools -->
         <div class="space-y-2">
-          <h4 class="text-white font-bold text-xs uppercase tracking-wider">Kadapa Studio</h4>
-          <p class="leading-relaxed">
-            <strong>Managing Director:</strong> Anand Nallagatla<br>
-            21/478, Palempapaiah Street,<br>
-            Opp. Sivaram Dum Biryani, Kadapa - 516001.
-          </p>
-          <p class="pt-1 text-white font-semibold">
-            Phone: <a href="tel:9246080201" class="text-brand-gold hover:underline">9246080201</a> / <a href="tel:9553545324" class="text-brand-gold hover:underline">9553545324</a>
-          </p>
-          <p class="pt-0.5 text-slate-300">
-            Web: <a href="https://anandfashionstudio.in" class="text-brand-gold hover:underline font-semibold">anandfashionstudio.in</a>
-          </p>
-          <div class="pt-2 flex items-center gap-2 text-[11px] text-slate-400">
-            <img src="assets/momo_it_logo.png" alt="Momo IT Logo" class="w-4 h-4 rounded object-contain">
-            <a href="https://www.momoittechnologies.com" target="_blank" rel="noopener noreferrer" class="text-brand-gold hover:underline font-semibold">MOMO IT TECHNOLOGIES</a>
+          <h4 class="text-white font-bold text-xs uppercase tracking-wider">Quick Navigation</h4>
+          <ul class="space-y-1.5 text-xs text-slate-400">
+            <li><a href="#wedding-estimator" class="hover:text-brand-gold transition-colors">💍 Wedding Cost Estimator</a></li>
+            <li><a href="#business-card" class="hover:text-brand-gold transition-colors">💳 Digital Visiting Card</a></li>
+            <li><a href="reviews.html" class="hover:text-brand-gold transition-colors">⭐ ReviewSmart AI Assistant</a></li>
+            <li><a href="#portfolio" class="hover:text-brand-gold transition-colors">📸 Master Portfolio Gallery</a></li>
+            <li><a href="#contact" class="hover:text-brand-gold transition-colors">🧭 Kadapa Landmark Directions</a></li>
+            <li><a href="#about" class="hover:text-brand-gold transition-colors">🏛️ About Anand Nallagatla</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Direct Connect & Studio App (Replaces Duplicate Address Block) -->
+        <div class="space-y-3">
+          <h4 class="text-white font-bold text-xs uppercase tracking-wider">Connect & Direct Booking</h4>
+          <div class="space-y-2">
+            <!-- 1-Tap WhatsApp -->
+            <a href="https://wa.me/919246080201?text=Hello%20Anand%20Fashion%20Studio%2C%20I%20would%20like%20to%20enquire%20about%20your%20photography%20and%20studio%20services." 
+               target="_blank" rel="noopener noreferrer"
+               class="flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-green-500 hover:brightness-110 text-white font-bold text-xs shadow-md shadow-emerald-950/30 transition-all active:scale-95">
+              <svg class="w-4 h-4 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.18-2.587-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.174.086.275.073.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.086.159.058 1.011.477 1.184.564.173.087.289.13.332.202.043.073.043.419-.101.824z"/></svg>
+              <span>Instant WhatsApp Chat</span>
+            </a>
+
+            <!-- 1-Tap Instagram Follow Profile -->
+            <a href="https://www.instagram.com/anand_fashion_studio_kdp/" 
+               target="_blank" rel="noopener noreferrer"
+               class="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-gradient-to-r from-purple-950/50 via-pink-950/40 to-slate-900/60 border border-pink-500/30 hover:border-pink-500 text-pink-200 hover:text-white text-xs font-semibold transition-all">
+              <svg class="w-4 h-4 text-pink-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+              <span>@anand_fashion_studio_kdp</span>
+            </a>
+          </div>
+
+          <!-- Studio Phone Helplines -->
+          <div class="pt-1">
+            <span class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold block">Studio Helplines:</span>
+            <div class="flex items-center gap-2 text-xs mt-1">
+              <a href="tel:9246080201" class="text-white hover:text-brand-gold font-bold transition-colors">9246080201</a>
+              <span class="text-slate-600">•</span>
+              <a href="tel:9553545324" class="text-white hover:text-brand-gold font-bold transition-colors">9553545324</a>
+            </div>
+          </div>
+
+          <!-- Studio Web Link & Partner Credit -->
+          <div class="pt-1 flex items-center justify-between text-[11px] text-slate-400 border-t border-brand-border/60">
+            <a href="https://anandfashionstudio.in" class="text-brand-gold hover:underline font-medium">anandfashionstudio.in</a>
+            <a href="https://www.momoittechnologies.com" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors flex items-center gap-1.5">
+              <img src="assets/momo_it_logo.png" alt="Momo IT Logo" class="w-3.5 h-3.5 rounded object-contain">
+              <span>MOMO IT</span>
+            </a>
           </div>
         </div>
 
