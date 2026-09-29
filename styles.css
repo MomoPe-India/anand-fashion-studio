@@ -150,15 +150,14 @@ dialog#lightboxModal[open]::backdrop {
    ---------------------------------------------------- */
 .visiting-card {
   width: 100%;
-  min-height: 100%;
   background: linear-gradient(135deg, #0a0e17 0%, #05070c 50%, #0e1422 100%);
   border: 2px solid rgba(212, 175, 55, 0.6);
+  border-radius: 1rem;
   box-shadow: 
     0 20px 50px -10px rgba(0, 0, 0, 0.9),
     0 0 30px rgba(212, 175, 55, 0.25),
     inset 0 0 20px rgba(0, 0, 0, 0.8);
   position: relative;
-  overflow: hidden;
   transition: all 0.4s ease;
   display: flex;
   flex-direction: column;
@@ -177,7 +176,7 @@ dialog#lightboxModal[open]::backdrop {
 
 @media (min-width: 1024px) {
   .visiting-card {
-    min-height: 340px;
+    min-height: 380px;
   }
 }
 
@@ -187,17 +186,6 @@ dialog#lightboxModal[open]::backdrop {
     0 25px 60px -10px rgba(0, 0, 0, 0.95),
     0 0 40px rgba(212, 175, 55, 0.35);
   border-color: rgba(212, 175, 55, 0.9);
-}
-
-.visiting-card::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 60%);
-  pointer-events: none;
 }
 
 /* Technology Partner Badge */

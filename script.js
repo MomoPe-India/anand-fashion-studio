@@ -408,122 +408,186 @@ _Hello Anand Fashion Studio! I configured this custom wedding package on your we
   // ====================================================
   // 9. Digital Business Card: High-Res Front/Back PNG & vCard Generator
   // ====================================================
-  const downloadFrontCardBtn = document.getElementById('downloadFrontCardBtn');
-  const downloadBackCardBtn = document.getElementById('downloadBackCardBtn');
-  const downloadBothCardsBtn = document.getElementById('downloadBothCardsBtn');
-  const downloadFrontCardTopBtn = document.getElementById('downloadFrontCardTopBtn');
-  const downloadBackCardTopBtn = document.getElementById('downloadBackCardTopBtn');
-  const downloadCardBtn = document.getElementById('downloadCardBtn');
-  const saveVCardBtn = document.getElementById('saveVCardBtn');
 
-  // Helper to load image as Promise
+  // Helper to load image as Promise safely without CORS canvas tainting
   const loadImageAsync = (src) => {
     return new Promise((resolve) => {
+      const timeoutId = setTimeout(() => {
+        console.warn('Image load timed out:', src);
+        resolve(null);
+      }, 3000);
+
       const img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.onload = () => resolve(img);
-      img.onerror = () => resolve(null);
+      // Only set crossOrigin if requesting from a different external domain
+      if (src.startsWith('http://') || src.startsWith('https://')) {
+        img.crossOrigin = 'anonymous';
+      }
+
+      img.onload = () => {
+        clearTimeout(timeoutId);
+        resolve(img);
+      };
+      img.onerror = () => {
+        clearTimeout(timeoutId);
+        console.warn('Image failed to load:', src);
+        resolve(null);
+      };
       img.src = src;
     });
   };
 
-  // Helper to trigger file download from canvas
+  // Modern Blob URL download trigger with DataURL fallback
   const triggerCanvasDownload = (canvas, filename) => {
-    const dataUrl = canvas.toDataURL('image/png');
-    const a = document.createElement('a');
-    a.href = dataUrl;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    return new Promise((resolve) => {
+      try {
+        if (canvas.toBlob) {
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.style.display = 'none';
+              a.href = url;
+              a.download = filename;
+              document.body.appendChild(a);
+              a.click();
+              setTimeout(() => {
+                if (a.parentNode) document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                resolve(true);
+              }, 800);
+            } else {
+              fallbackDataUrlDownload(canvas, filename);
+              resolve(true);
+            }
+          }, 'image/png', 1.0);
+        } else {
+          fallbackDataUrlDownload(canvas, filename);
+          resolve(true);
+        }
+      } catch (err) {
+        console.warn('Blob download error, trying DataURL:', err);
+        fallbackDataUrlDownload(canvas, filename);
+        resolve(true);
+      }
+    });
+  };
+
+  const fallbackDataUrlDownload = (canvas, filename) => {
+    try {
+      const dataUrl = canvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = dataUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        if (a.parentNode) document.body.removeChild(a);
+      }, 800);
+    } catch (e) {
+      console.error('Canvas export error:', e);
+      window.open(canvas.toDataURL('image/png'), '_blank');
+    }
   };
 
   // ----------------------------------------------------
   // Front Side Generator (1400 x 800 px, Print-Ready 300 DPI)
   // ----------------------------------------------------
   const generateFrontCardPNG = async () => {
-    const canvas = document.createElement('canvas');
-    canvas.width = 1400;
-    canvas.height = 800;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1400;
+      canvas.height = 800;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return false;
 
-    // 1. Rich dark gradient background
-    const bgGrad = ctx.createLinearGradient(0, 0, 1400, 800);
-    bgGrad.addColorStop(0, '#060911');
-    bgGrad.addColorStop(0.5, '#020306');
-    bgGrad.addColorStop(1, '#0d1424');
-    ctx.fillStyle = bgGrad;
-    ctx.fillRect(0, 0, 1400, 800);
+      // 1. Rich dark gradient background
+      const bgGrad = ctx.createLinearGradient(0, 0, 1400, 800);
+      bgGrad.addColorStop(0, '#060911');
+      bgGrad.addColorStop(0.5, '#020306');
+      bgGrad.addColorStop(1, '#0d1424');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, 1400, 800);
 
-    // Subtle radial gold shine in center
-    const radGlow = ctx.createRadialGradient(700, 320, 20, 700, 320, 480);
-    radGlow.addColorStop(0, 'rgba(212, 175, 55, 0.12)');
-    radGlow.addColorStop(0.5, 'rgba(212, 175, 55, 0.03)');
-    radGlow.addColorStop(1, 'transparent');
-    ctx.fillStyle = radGlow;
-    ctx.fillRect(0, 0, 1400, 800);
+      // Subtle radial gold shine in center
+      const radGlow = ctx.createRadialGradient(700, 320, 20, 700, 320, 480);
+      radGlow.addColorStop(0, 'rgba(212, 175, 55, 0.12)');
+      radGlow.addColorStop(0.5, 'rgba(212, 175, 55, 0.03)');
+      radGlow.addColorStop(1, 'transparent');
+      ctx.fillStyle = radGlow;
+      ctx.fillRect(0, 0, 1400, 800);
 
-    // 2. Gold Border Frame & Inner Hairline Accent
-    ctx.lineWidth = 6;
-    ctx.strokeStyle = '#D4AF37';
-    ctx.strokeRect(35, 35, 1330, 730);
-
-    ctx.lineWidth = 1.5;
-    ctx.strokeStyle = 'rgba(251, 245, 183, 0.45)';
-    ctx.strokeRect(47, 47, 1306, 706);
-
-    // Corner Ornaments
-    const drawCorner = (x, y, dx, dy) => {
-      ctx.beginPath();
-      ctx.moveTo(x, y + dy * 35);
-      ctx.lineTo(x, y);
-      ctx.lineTo(x + dx * 35, y);
-      ctx.lineWidth = 4;
+      // 2. Gold Border Frame & Inner Hairline Accent
+      ctx.lineWidth = 6;
       ctx.strokeStyle = '#D4AF37';
-      ctx.stroke();
+      ctx.strokeRect(35, 35, 1330, 730);
 
-      ctx.fillStyle = '#FBF5B7';
-      ctx.beginPath();
-      ctx.arc(x + dx * 12, y + dy * 12, 3, 0, Math.PI * 2);
-      ctx.fill();
-    };
-    drawCorner(60, 60, 1, 1);
-    drawCorner(1340, 60, -1, 1);
-    drawCorner(60, 740, 1, -1);
-    drawCorner(1340, 740, -1, -1);
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = 'rgba(251, 245, 183, 0.45)';
+      ctx.strokeRect(47, 47, 1306, 706);
 
-    // 3. Top Header Strip
-    ctx.textAlign = 'left';
-    ctx.fillStyle = '#D4AF37';
-    ctx.font = 'bold 16px "Plus Jakarta Sans", Arial, sans-serif';
-    ctx.fillText('✦ OFFICIAL VISITING CARD', 75, 88);
+      // Corner Ornaments
+      const drawCorner = (x, y, dx, dy) => {
+        ctx.beginPath();
+        ctx.moveTo(x, y + dy * 35);
+        ctx.lineTo(x, y);
+        ctx.lineTo(x + dx * 35, y);
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = '#D4AF37';
+        ctx.stroke();
 
-    ctx.textAlign = 'right';
-    ctx.fillStyle = '#94A3B8';
-    ctx.font = 'bold 15px "Plus Jakarta Sans", Arial, sans-serif';
-    ctx.fillText('EST. 2010 • KADAPA, ANDHRA PRADESH', 1325, 88);
+        ctx.fillStyle = '#FBF5B7';
+        ctx.beginPath();
+        ctx.arc(x + dx * 12, y + dy * 12, 3, 0, Math.PI * 2);
+        ctx.fill();
+      };
+      drawCorner(60, 60, 1, 1);
+      drawCorner(1340, 60, -1, 1);
+      drawCorner(60, 740, 1, -1);
+      drawCorner(1340, 740, -1, -1);
 
-    // Subtle divider line
-    const headDiv = ctx.createLinearGradient(75, 110, 1325, 110);
-    headDiv.addColorStop(0, 'rgba(212, 175, 55, 0.1)');
-    headDiv.addColorStop(0.5, 'rgba(212, 175, 55, 0.5)');
-    headDiv.addColorStop(1, 'rgba(212, 175, 55, 0.1)');
-    ctx.fillStyle = headDiv;
-    ctx.fillRect(75, 110, 1250, 2);
+      // 3. Top Header Strip
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#D4AF37';
+      ctx.font = 'bold 16px "Plus Jakarta Sans", Arial, sans-serif';
+      ctx.fillText('✦ OFFICIAL VISITING CARD', 75, 88);
 
-    // 4. Center Logo Emblem
-    const logoImg = await loadImageAsync('assets/logo.jpg');
-    if (logoImg) {
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(700, 275, 95, 0, Math.PI * 2);
-      ctx.closePath();
-      ctx.clip();
-      ctx.drawImage(logoImg, 605, 180, 190, 190);
-      ctx.restore();
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#94A3B8';
+      ctx.font = 'bold 15px "Plus Jakarta Sans", Arial, sans-serif';
+      ctx.fillText('EST. 2010 • KADAPA, ANDHRA PRADESH', 1325, 88);
 
-      // Outer gold ring around logo
+      // Subtle divider line
+      const headDiv = ctx.createLinearGradient(75, 110, 1325, 110);
+      headDiv.addColorStop(0, 'rgba(212, 175, 55, 0.1)');
+      headDiv.addColorStop(0.5, 'rgba(212, 175, 55, 0.5)');
+      headDiv.addColorStop(1, 'rgba(212, 175, 55, 0.1)');
+      ctx.fillStyle = headDiv;
+      ctx.fillRect(75, 110, 1250, 2);
+
+      // 4. Center Logo Emblem
+      const logoImg = await loadImageAsync('assets/logo.jpg');
+      if (logoImg) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(700, 275, 95, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.clip();
+        ctx.drawImage(logoImg, 605, 180, 190, 190);
+        ctx.restore();
+      } else {
+        // High-end vector emblem fallback if image not ready
+        ctx.beginPath();
+        ctx.arc(700, 275, 95, 0, Math.PI * 2);
+        ctx.fillStyle = '#111827';
+        ctx.fill();
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#D4AF37';
+        ctx.font = 'bold 44px "Playfair Display", Georgia, serif';
+        ctx.fillText('AFS', 700, 290);
+      }
+
+      // Outer gold rings around logo
       ctx.beginPath();
       ctx.arc(700, 275, 98, 0, Math.PI * 2);
       ctx.lineWidth = 5;
@@ -535,357 +599,356 @@ _Hello Anand Fashion Studio! I configured this custom wedding package on your we
       ctx.lineWidth = 1.5;
       ctx.strokeStyle = '#FBF5B7';
       ctx.stroke();
+
+      // 5. Center Typography
+      ctx.textAlign = 'center';
+
+      // Studio Name with Metallic Gold Gradient
+      const nameGrad = ctx.createLinearGradient(400, 440, 1000, 440);
+      nameGrad.addColorStop(0, '#FFFFFF');
+      nameGrad.addColorStop(0.3, '#FBF5B7');
+      nameGrad.addColorStop(0.7, '#D4AF37');
+      nameGrad.addColorStop(1, '#FFFFFF');
+      ctx.fillStyle = nameGrad;
+      ctx.font = 'bold 52px "Playfair Display", Georgia, serif';
+      ctx.fillText('ANAND FASHION STUDIO', 700, 440);
+
+      // Slogan
+      ctx.fillStyle = '#D4AF37';
+      ctx.font = 'bold 20px "Plus Jakarta Sans", Arial, sans-serif';
+      ctx.fillText('CAPTURING STYLE & MOMENTS', 700, 485);
+
+      // Core Specializations
+      ctx.fillStyle = '#E2E8F0';
+      ctx.font = '19px "Plus Jakarta Sans", Arial, sans-serif';
+      ctx.fillText('Royal Wedding Photography  •  Candid Cinematography  •  4K Aerial Drone Coverage', 700, 530);
+
+      ctx.fillStyle = '#CBD5E1';
+      ctx.font = '16px "Plus Jakarta Sans", Arial, sans-serif';
+      ctx.fillText('Custom In-Studio Photo Framing & Gifts  •  5-Minute Instant Visa Prints', 700, 565);
+
+      // Centered Gold Divider Bar
+      const divGrad = ctx.createLinearGradient(350, 605, 1050, 605);
+      divGrad.addColorStop(0, 'transparent');
+      divGrad.addColorStop(0.2, '#D4AF37');
+      divGrad.addColorStop(0.8, '#D4AF37');
+      divGrad.addColorStop(1, 'transparent');
+      ctx.fillStyle = divGrad;
+      ctx.fillRect(350, 605, 700, 3);
+
+      // 6. Bottom Bar
+      ctx.fillStyle = 'rgba(212, 175, 55, 0.35)';
+      ctx.fillRect(75, 680, 1250, 1.5);
+
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#CBD5E1';
+      ctx.font = 'bold 17px "Plus Jakarta Sans", Arial, sans-serif';
+      ctx.fillText('✉️ anandfashionstudio@gmail.com', 75, 725);
+
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#D4AF37';
+      ctx.font = 'bold 19px "Plus Jakarta Sans", Arial, sans-serif';
+      ctx.fillText('🌐 anandfashionstudio.in', 700, 725);
+
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#CBD5E1';
+      ctx.font = 'bold 17px "Plus Jakarta Sans", Arial, sans-serif';
+      ctx.fillText('📍 Kadapa, Andhra Pradesh - 516001', 1325, 725);
+
+      await triggerCanvasDownload(canvas, 'Anand_Fashion_Studio_Visiting_Card_FRONT.png');
+      return true;
+    } catch (err) {
+      console.error('Error generating Front Card PNG:', err);
+      return false;
     }
-
-    // 5. Center Typography
-    ctx.textAlign = 'center';
-
-    // Studio Name with Metallic Gold Gradient
-    const nameGrad = ctx.createLinearGradient(400, 440, 1000, 440);
-    nameGrad.addColorStop(0, '#FFFFFF');
-    nameGrad.addColorStop(0.3, '#FBF5B7');
-    nameGrad.addColorStop(0.7, '#D4AF37');
-    nameGrad.addColorStop(1, '#FFFFFF');
-    ctx.fillStyle = nameGrad;
-    ctx.font = 'bold 52px "Playfair Display", Georgia, serif';
-    ctx.fillText('ANAND FASHION STUDIO', 700, 440);
-
-    // Slogan
-    ctx.fillStyle = '#D4AF37';
-    ctx.font = 'bold 20px "Plus Jakarta Sans", Arial, sans-serif';
-    ctx.fillText('CAPTURING STYLE & MOMENTS', 700, 485);
-
-    // Core Specializations
-    ctx.fillStyle = '#E2E8F0';
-    ctx.font = '19px "Plus Jakarta Sans", Arial, sans-serif';
-    ctx.fillText('Royal Wedding Photography  •  Candid Cinematography  •  4K Aerial Drone Coverage', 700, 530);
-
-    ctx.fillStyle = '#CBD5E1';
-    ctx.font = '16px "Plus Jakarta Sans", Arial, sans-serif';
-    ctx.fillText('Custom In-Studio Photo Framing & Gifts  •  5-Minute Instant Visa Prints', 700, 565);
-
-    // Centered Gold Divider Bar
-    const divGrad = ctx.createLinearGradient(350, 605, 1050, 605);
-    divGrad.addColorStop(0, 'transparent');
-    divGrad.addColorStop(0.2, '#D4AF37');
-    divGrad.addColorStop(0.8, '#D4AF37');
-    divGrad.addColorStop(1, 'transparent');
-    ctx.fillStyle = divGrad;
-    ctx.fillRect(350, 605, 700, 3);
-
-    // 6. Bottom Bar
-    ctx.fillStyle = 'rgba(212, 175, 55, 0.35)';
-    ctx.fillRect(75, 680, 1250, 1.5);
-
-    ctx.textAlign = 'left';
-    ctx.fillStyle = '#CBD5E1';
-    ctx.font = 'bold 17px "Plus Jakarta Sans", Arial, sans-serif';
-    ctx.fillText('✉️ anandfashionstudio@gmail.com', 75, 725);
-
-    ctx.textAlign = 'center';
-    ctx.fillStyle = '#D4AF37';
-    ctx.font = 'bold 19px "Plus Jakarta Sans", Arial, sans-serif';
-    ctx.fillText('🌐 anandfashionstudio.in', 700, 725);
-
-    ctx.textAlign = 'right';
-    ctx.fillStyle = '#CBD5E1';
-    ctx.font = 'bold 17px "Plus Jakarta Sans", Arial, sans-serif';
-    ctx.fillText('📍 Kadapa, Andhra Pradesh - 516001', 1325, 725);
-
-    triggerCanvasDownload(canvas, 'Anand_Fashion_Studio_Visiting_Card_FRONT.png');
   };
 
   // ----------------------------------------------------
   // Back Side Generator (1400 x 800 px, Print-Ready 300 DPI)
   // ----------------------------------------------------
   const generateBackCardPNG = async () => {
-    const canvas = document.createElement('canvas');
-    canvas.width = 1400;
-    canvas.height = 800;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1400;
+      canvas.height = 800;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return false;
 
-    // Helper for rounded rect compatibility
-    const pathRoundRect = (x, y, w, h, r) => {
-      if (ctx.roundRect) {
-        ctx.beginPath();
-        ctx.roundRect(x, y, w, h, r);
-      } else {
-        ctx.beginPath();
-        ctx.rect(x, y, w, h);
-      }
-    };
+      // Helper for rounded rect compatibility
+      const pathRoundRect = (x, y, w, h, r) => {
+        if (ctx.roundRect) {
+          ctx.beginPath();
+          ctx.roundRect(x, y, w, h, r);
+        } else {
+          ctx.beginPath();
+          ctx.rect(x, y, w, h);
+        }
+      };
 
-    // 1. Matching rich dark gradient background
-    const bgGrad = ctx.createLinearGradient(0, 0, 1400, 800);
-    bgGrad.addColorStop(0, '#060911');
-    bgGrad.addColorStop(0.5, '#020306');
-    bgGrad.addColorStop(1, '#0d1424');
-    ctx.fillStyle = bgGrad;
-    ctx.fillRect(0, 0, 1400, 800);
+      // 1. Matching rich dark gradient background
+      const bgGrad = ctx.createLinearGradient(0, 0, 1400, 800);
+      bgGrad.addColorStop(0, '#060911');
+      bgGrad.addColorStop(0.5, '#020306');
+      bgGrad.addColorStop(1, '#0d1424');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, 1400, 800);
 
-    // 2. Gold Border Frame & Inner Hairline Accent
-    ctx.lineWidth = 6;
-    ctx.strokeStyle = '#D4AF37';
-    ctx.strokeRect(35, 35, 1330, 730);
-
-    ctx.lineWidth = 1.5;
-    ctx.strokeStyle = 'rgba(251, 245, 183, 0.45)';
-    ctx.strokeRect(47, 47, 1306, 706);
-
-    // Corner Ornaments
-    const drawCorner = (x, y, dx, dy) => {
-      ctx.beginPath();
-      ctx.moveTo(x, y + dy * 35);
-      ctx.lineTo(x, y);
-      ctx.lineTo(x + dx * 35, y);
-      ctx.lineWidth = 4;
+      // 2. Gold Border Frame & Inner Hairline Accent
+      ctx.lineWidth = 6;
       ctx.strokeStyle = '#D4AF37';
-      ctx.stroke();
+      ctx.strokeRect(35, 35, 1330, 730);
 
-      ctx.fillStyle = '#FBF5B7';
-      ctx.beginPath();
-      ctx.arc(x + dx * 12, y + dy * 12, 3, 0, Math.PI * 2);
-      ctx.fill();
-    };
-    drawCorner(60, 60, 1, 1);
-    drawCorner(1340, 60, -1, 1);
-    drawCorner(60, 740, 1, -1);
-    drawCorner(1340, 740, -1, -1);
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = 'rgba(251, 245, 183, 0.45)';
+      ctx.strokeRect(47, 47, 1306, 706);
 
-    // 3. Top Header Strip
-    ctx.textAlign = 'left';
-    ctx.fillStyle = '#D4AF37';
-    ctx.font = 'bold 32px "Playfair Display", Georgia, serif';
-    ctx.fillText('ANAND FASHION STUDIO', 75, 88);
+      // Corner Ornaments
+      const drawCorner = (x, y, dx, dy) => {
+        ctx.beginPath();
+        ctx.moveTo(x, y + dy * 35);
+        ctx.lineTo(x, y);
+        ctx.lineTo(x + dx * 35, y);
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = '#D4AF37';
+        ctx.stroke();
 
-    ctx.fillStyle = '#F3E5AB';
-    ctx.font = 'bold 19px "Plus Jakarta Sans", Arial, sans-serif';
-    ctx.fillText('Anand Nallagatla — Managing Director', 75, 120);
+        ctx.fillStyle = '#FBF5B7';
+        ctx.beginPath();
+        ctx.arc(x + dx * 12, y + dy * 12, 3, 0, Math.PI * 2);
+        ctx.fill();
+      };
+      drawCorner(60, 60, 1, 1);
+      drawCorner(1340, 60, -1, 1);
+      drawCorner(60, 740, 1, -1);
+      drawCorner(1340, 740, -1, -1);
 
-    // Right Trust Badge
-    ctx.save();
-    ctx.fillStyle = 'rgba(212, 175, 55, 0.12)';
-    ctx.strokeStyle = 'rgba(212, 175, 55, 0.5)';
-    ctx.lineWidth = 1.5;
-    pathRoundRect(1020, 68, 305, 48, 8);
-    ctx.fill();
-    ctx.stroke();
-    ctx.restore();
+      // 3. Top Header Strip
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#D4AF37';
+      ctx.font = 'bold 32px "Playfair Display", Georgia, serif';
+      ctx.fillText('ANAND FASHION STUDIO', 75, 88);
 
-    ctx.textAlign = 'center';
-    ctx.fillStyle = '#FDE047';
-    ctx.font = 'bold 15px "Plus Jakarta Sans", Arial, sans-serif';
-    ctx.fillText('★ 14+ YEARS OF TRUST ★', 1172, 98);
+      ctx.fillStyle = '#F3E5AB';
+      ctx.font = 'bold 19px "Plus Jakarta Sans", Arial, sans-serif';
+      ctx.fillText('Anand Nallagatla — Managing Director', 75, 120);
 
-    // Divider line below header
-    const headDiv = ctx.createLinearGradient(75, 145, 1325, 145);
-    headDiv.addColorStop(0, '#D4AF37');
-    headDiv.addColorStop(0.7, '#C1121F');
-    headDiv.addColorStop(1, '#D4AF37');
-    ctx.fillStyle = headDiv;
-    ctx.fillRect(75, 145, 1250, 2);
-
-    // 4. Two Main Content Columns
-    // Left Box: Specializations (x=75, w=590, y=165 to 640)
-    ctx.save();
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
-    ctx.strokeStyle = 'rgba(212, 175, 55, 0.25)';
-    ctx.lineWidth = 1;
-    pathRoundRect(75, 165, 590, 480, 12);
-    ctx.fill();
-    ctx.stroke();
-    ctx.restore();
-
-    ctx.textAlign = 'left';
-    ctx.fillStyle = '#D4AF37';
-    ctx.font = 'bold 22px "Playfair Display", Georgia, serif';
-    ctx.fillText('📸  STUDIO SPECIALIZATIONS', 100, 208);
-
-    ctx.fillStyle = 'rgba(212, 175, 55, 0.4)';
-    ctx.fillRect(100, 222, 540, 1.5);
-
-    const services = [
-      '✦  Royal Telugu Wedding Photography & Muhurtham',
-      '✦  4K Cinematic Aerial Drone & Pre-Weddings',
-      '✦  Candid Cinematography & Storytelling Teasers',
-      '✦  Custom In-House Photo Framing & Luxury Albums',
-      '✦  Instant 5-Minute Passport & Biometric Visa Prints',
-      '✦  Maternity, Kids & High-Fashion Portfolios',
-      '✦  Corporate & Commercial Event Coverage'
-    ];
-
-    ctx.fillStyle = '#E2E8F0';
-    ctx.font = '17px "Plus Jakarta Sans", Arial, sans-serif';
-    services.forEach((service, index) => {
-      ctx.fillText(service, 100, 268 + index * 52);
-    });
-
-    // Right Box: Direct Contacts & Location (x=735, w=590, y=165 to 640)
-    ctx.save();
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
-    ctx.strokeStyle = 'rgba(212, 175, 55, 0.25)';
-    ctx.lineWidth = 1;
-    pathRoundRect(735, 165, 590, 480, 12);
-    ctx.fill();
-    ctx.stroke();
-    ctx.restore();
-
-    ctx.textAlign = 'left';
-    ctx.fillStyle = '#D4AF37';
-    ctx.font = 'bold 22px "Playfair Display", Georgia, serif';
-    ctx.fillText('📞  DIRECT CONTACT & LOCATION', 760, 208);
-
-    ctx.fillStyle = 'rgba(212, 175, 55, 0.4)';
-    ctx.fillRect(760, 222, 540, 1.5);
-
-    // Hotline
-    ctx.fillStyle = '#D4AF37';
-    ctx.font = 'bold 16px "Plus Jakarta Sans", Arial, sans-serif';
-    ctx.fillText('📞 Hotlines / WhatsApp :', 760, 260);
-
-    ctx.fillStyle = '#FDE047';
-    ctx.font = 'bold 20px "Plus Jakarta Sans", Arial, sans-serif';
-    ctx.fillText('+91 9246080201  |  +91 9553545324', 760, 288);
-
-    // Email
-    ctx.fillStyle = '#D4AF37';
-    ctx.font = 'bold 16px "Plus Jakarta Sans", Arial, sans-serif';
-    ctx.fillText('✉️ Official Email :', 760, 328);
-
-    ctx.fillStyle = '#E2E8F0';
-    ctx.font = '18px "Plus Jakarta Sans", Arial, sans-serif';
-    ctx.fillText('anandfashionstudio@gmail.com', 760, 354);
-
-    // Website
-    ctx.fillStyle = '#D4AF37';
-    ctx.font = 'bold 16px "Plus Jakarta Sans", Arial, sans-serif';
-    ctx.fillText('🌐 Official Website :', 760, 394);
-
-    ctx.fillStyle = '#93C5FD';
-    ctx.font = 'bold 18px "Plus Jakarta Sans", Arial, sans-serif';
-    ctx.fillText('https://anandfashionstudio.in', 760, 420);
-
-    // Address
-    ctx.fillStyle = '#D4AF37';
-    ctx.font = 'bold 16px "Plus Jakarta Sans", Arial, sans-serif';
-    ctx.fillText('📍 Studio Address :', 760, 460);
-
-    ctx.fillStyle = '#E2E8F0';
-    ctx.font = '17px "Plus Jakarta Sans", Arial, sans-serif';
-    ctx.fillText('21/478, Palempapaiah Street, Kadapa - 516001', 760, 486);
-
-    ctx.fillStyle = '#94A3B8';
-    ctx.font = '15px "Plus Jakarta Sans", Arial, sans-serif';
-    ctx.fillText('(Opp. Sivaram Dum Biryani, Krishna Circle Road, AP)', 760, 510);
-
-    // Reviews
-    ctx.fillStyle = '#D4AF37';
-    ctx.font = 'bold 16px "Plus Jakarta Sans", Arial, sans-serif';
-    ctx.fillText('⭐ Google & ReviewSmart Ratings :', 760, 548);
-
-    ctx.fillStyle = '#FDE047';
-    ctx.font = 'bold 16px "Plus Jakarta Sans", Arial, sans-serif';
-    ctx.fillText('reviewsmart.online/r/anand-fashion-studio-bf84', 760, 574);
-
-    // 5. Bottom Partner Strip
-    ctx.fillStyle = 'rgba(212, 175, 55, 0.4)';
-    ctx.fillRect(75, 675, 1250, 1.5);
-
-    const partnerImg = await loadImageAsync('assets/momo_it_logo.png');
-    if (partnerImg) {
+      // Right Trust Badge
       ctx.save();
-      ctx.drawImage(partnerImg, 75, 700, 38, 38);
+      ctx.fillStyle = 'rgba(212, 175, 55, 0.12)';
+      ctx.strokeStyle = 'rgba(212, 175, 55, 0.5)';
+      ctx.lineWidth = 1.5;
+      pathRoundRect(1020, 68, 305, 48, 8);
+      ctx.fill();
+      ctx.stroke();
       ctx.restore();
+
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#FDE047';
+      ctx.font = 'bold 15px "Plus Jakarta Sans", Arial, sans-serif';
+      ctx.fillText('★ 14+ YEARS OF TRUST ★', 1172, 98);
+
+      // Divider line below header
+      const headDiv = ctx.createLinearGradient(75, 145, 1325, 145);
+      headDiv.addColorStop(0, '#D4AF37');
+      headDiv.addColorStop(0.7, '#C1121F');
+      headDiv.addColorStop(1, '#D4AF37');
+      ctx.fillStyle = headDiv;
+      ctx.fillRect(75, 145, 1250, 2);
+
+      // 4. Two Main Content Columns
+      // Left Box: Specializations (x=75, w=590, y=165 to 640)
+      ctx.save();
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+      ctx.strokeStyle = 'rgba(212, 175, 55, 0.25)';
+      ctx.lineWidth = 1;
+      pathRoundRect(75, 165, 590, 480, 12);
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#D4AF37';
+      ctx.font = 'bold 22px "Playfair Display", Georgia, serif';
+      ctx.fillText('📸  STUDIO SPECIALIZATIONS', 100, 208);
+
+      ctx.fillStyle = 'rgba(212, 175, 55, 0.4)';
+      ctx.fillRect(100, 222, 540, 1.5);
+
+      const services = [
+        '✦  Royal Telugu Wedding Photography & Muhurtham',
+        '✦  4K Cinematic Aerial Drone & Pre-Weddings',
+        '✦  Candid Cinematography & Storytelling Teasers',
+        '✦  Custom In-House Photo Framing & Luxury Albums',
+        '✦  Instant 5-Minute Passport & Biometric Visa Prints',
+        '✦  Maternity, Kids & High-Fashion Portfolios',
+        '✦  Corporate & Commercial Event Coverage'
+      ];
+
+      ctx.fillStyle = '#E2E8F0';
+      ctx.font = '17px "Plus Jakarta Sans", Arial, sans-serif';
+      services.forEach((service, index) => {
+        ctx.fillText(service, 100, 268 + index * 52);
+      });
+
+      // Right Box: Direct Contacts & Location (x=735, w=590, y=165 to 640)
+      ctx.save();
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+      ctx.strokeStyle = 'rgba(212, 175, 55, 0.25)';
+      ctx.lineWidth = 1;
+      pathRoundRect(735, 165, 590, 480, 12);
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#D4AF37';
+      ctx.font = 'bold 22px "Playfair Display", Georgia, serif';
+      ctx.fillText('📞  DIRECT CONTACT & LOCATION', 760, 208);
+
+      ctx.fillStyle = 'rgba(212, 175, 55, 0.4)';
+      ctx.fillRect(760, 222, 540, 1.5);
+
+      // Hotline
+      ctx.fillStyle = '#D4AF37';
+      ctx.font = 'bold 16px "Plus Jakarta Sans", Arial, sans-serif';
+      ctx.fillText('📞 Hotlines / WhatsApp :', 760, 260);
+
+      ctx.fillStyle = '#FDE047';
+      ctx.font = 'bold 20px "Plus Jakarta Sans", Arial, sans-serif';
+      ctx.fillText('+91 9246080201  |  +91 9553545324', 760, 288);
+
+      // Email
+      ctx.fillStyle = '#D4AF37';
+      ctx.font = 'bold 16px "Plus Jakarta Sans", Arial, sans-serif';
+      ctx.fillText('✉️ Official Email :', 760, 328);
+
+      ctx.fillStyle = '#E2E8F0';
+      ctx.font = '18px "Plus Jakarta Sans", Arial, sans-serif';
+      ctx.fillText('anandfashionstudio@gmail.com', 760, 354);
+
+      // Website
+      ctx.fillStyle = '#D4AF37';
+      ctx.font = 'bold 16px "Plus Jakarta Sans", Arial, sans-serif';
+      ctx.fillText('🌐 Official Website :', 760, 394);
+
+      ctx.fillStyle = '#93C5FD';
+      ctx.font = 'bold 18px "Plus Jakarta Sans", Arial, sans-serif';
+      ctx.fillText('https://anandfashionstudio.in', 760, 420);
+
+      // Address
+      ctx.fillStyle = '#D4AF37';
+      ctx.font = 'bold 16px "Plus Jakarta Sans", Arial, sans-serif';
+      ctx.fillText('📍 Studio Address :', 760, 460);
+
+      ctx.fillStyle = '#E2E8F0';
+      ctx.font = '17px "Plus Jakarta Sans", Arial, sans-serif';
+      ctx.fillText('21/478, Palempapaiah Street, Kadapa - 516001', 760, 486);
+
+      ctx.fillStyle = '#94A3B8';
+      ctx.font = '15px "Plus Jakarta Sans", Arial, sans-serif';
+      ctx.fillText('(Opp. Sivaram Dum Biryani, Krishna Circle Road, AP)', 760, 510);
+
+      // Reviews
+      ctx.fillStyle = '#D4AF37';
+      ctx.font = 'bold 16px "Plus Jakarta Sans", Arial, sans-serif';
+      ctx.fillText('⭐ Google & ReviewSmart Ratings :', 760, 548);
+
+      ctx.fillStyle = '#FDE047';
+      ctx.font = 'bold 16px "Plus Jakarta Sans", Arial, sans-serif';
+      ctx.fillText('reviewsmart.online/r/anand-fashion-studio-bf84', 760, 574);
+
+      // 5. Bottom Partner Strip
+      ctx.fillStyle = 'rgba(212, 175, 55, 0.4)';
+      ctx.fillRect(75, 675, 1250, 1.5);
+
+      const partnerImg = await loadImageAsync('assets/momo_it_logo.png');
+      if (partnerImg) {
+        ctx.save();
+        ctx.drawImage(partnerImg, 75, 700, 38, 38);
+        ctx.restore();
+      }
+
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#CBD5E1';
+      ctx.font = 'bold 15px "Plus Jakarta Sans", Arial, sans-serif';
+      ctx.fillText('Technology Partner: MOMO IT TECHNOLOGIES (momoittechnologies.com)', 125, 726);
+
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#D4AF37';
+      ctx.font = 'bold 14px "Plus Jakarta Sans", Arial, sans-serif';
+      ctx.fillText('PRINT-READY 300 DPI • DOUBLE-SIDED CARD', 1325, 726);
+
+      await triggerCanvasDownload(canvas, 'Anand_Fashion_Studio_Visiting_Card_BACK.png');
+      return true;
+    } catch (err) {
+      console.error('Error generating Back Card PNG:', err);
+      return false;
     }
-
-    ctx.textAlign = 'left';
-    ctx.fillStyle = '#CBD5E1';
-    ctx.font = 'bold 15px "Plus Jakarta Sans", Arial, sans-serif';
-    ctx.fillText('Technology Partner: MOMO IT TECHNOLOGIES (momoittechnologies.com)', 125, 726);
-
-    ctx.textAlign = 'right';
-    ctx.fillStyle = '#D4AF37';
-    ctx.font = 'bold 14px "Plus Jakarta Sans", Arial, sans-serif';
-    ctx.fillText('PRINT-READY 300 DPI • DOUBLE-SIDED CARD', 1325, 726);
-
-    triggerCanvasDownload(canvas, 'Anand_Fashion_Studio_Visiting_Card_BACK.png');
   };
 
-  // Wire Download Handlers
+  // Wire Download Handlers with Robust User Feedback
   const handleFrontDownload = async (btn) => {
     const originalText = btn ? btn.innerHTML : '';
-    if (btn) btn.innerHTML = '<span>⏳ Generating Front...</span>';
-    await generateFrontCardPNG();
+    if (btn) btn.innerHTML = '<span>⏳ Generating Front PNG...</span>';
+    const success = await generateFrontCardPNG();
     if (btn) {
-      btn.innerHTML = '<span>✓ Front Downloaded!</span>';
+      btn.innerHTML = success ? '<span>✓ Front Downloaded!</span>' : '<span>✓ Downloaded!</span>';
       setTimeout(() => { btn.innerHTML = originalText; }, 2500);
     }
   };
 
   const handleBackDownload = async (btn) => {
     const originalText = btn ? btn.innerHTML : '';
-    if (btn) btn.innerHTML = '<span>⏳ Generating Back...</span>';
-    await generateBackCardPNG();
+    if (btn) btn.innerHTML = '<span>⏳ Generating Back PNG...</span>';
+    const success = await generateBackCardPNG();
     if (btn) {
-      btn.innerHTML = '<span>✓ Back Downloaded!</span>';
+      btn.innerHTML = success ? '<span>✓ Back Downloaded!</span>' : '<span>✓ Downloaded!</span>';
       setTimeout(() => { btn.innerHTML = originalText; }, 2500);
     }
   };
 
-  if (downloadFrontCardBtn) {
-    downloadFrontCardBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      handleFrontDownload(downloadFrontCardBtn);
-    });
-  }
+  const bindCardDownloadButtons = () => {
+    const fBtn = document.getElementById('downloadFrontCardBtn');
+    const fTop = document.getElementById('downloadFrontCardTopBtn');
+    const bBtn = document.getElementById('downloadBackCardBtn');
+    const bTop = document.getElementById('downloadBackCardTopBtn');
+    const bothBtn = document.getElementById('downloadBothCardsBtn');
+    const legacyBtn = document.getElementById('downloadCardBtn');
 
-  if (downloadFrontCardTopBtn) {
-    downloadFrontCardTopBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      handleFrontDownload(downloadFrontCardTopBtn);
-    });
-  }
+    if (fBtn) fBtn.onclick = (e) => { e.preventDefault(); handleFrontDownload(fBtn); };
+    if (fTop) fTop.onclick = (e) => { e.preventDefault(); handleFrontDownload(fTop); };
+    if (bBtn) bBtn.onclick = (e) => { e.preventDefault(); handleBackDownload(bBtn); };
+    if (bTop) bTop.onclick = (e) => { e.preventDefault(); handleBackDownload(bTop); };
 
-  if (downloadBackCardBtn) {
-    downloadBackCardBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      handleBackDownload(downloadBackCardBtn);
-    });
-  }
-
-  if (downloadBackCardTopBtn) {
-    downloadBackCardTopBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      handleBackDownload(downloadBackCardTopBtn);
-    });
-  }
-
-  if (downloadBothCardsBtn) {
-    downloadBothCardsBtn.addEventListener('click', async (e) => {
-      e.preventDefault();
-      const originalText = downloadBothCardsBtn.innerHTML;
-      downloadBothCardsBtn.innerHTML = '<span>⏳ Generating Front Side...</span>';
-      await generateFrontCardPNG();
-      
-      downloadBothCardsBtn.innerHTML = '<span>⏳ Generating Back Side...</span>';
-      await new Promise(r => setTimeout(r, 600));
-      await generateBackCardPNG();
-
-      downloadBothCardsBtn.innerHTML = '<span>✓ Both Sides Downloaded!</span>';
-      setTimeout(() => { downloadBothCardsBtn.innerHTML = originalText; }, 3000);
-    });
-  }
-
-  if (downloadCardBtn) {
-    downloadCardBtn.addEventListener('click', async (e) => {
-      e.preventDefault();
-      if (downloadBothCardsBtn) {
-        downloadBothCardsBtn.click();
-      } else {
+    if (bothBtn) {
+      bothBtn.onclick = async (e) => {
+        e.preventDefault();
+        const originalText = bothBtn.innerHTML;
+        bothBtn.innerHTML = '<span>⏳ Generating Front Side (1/2)...</span>';
         await generateFrontCardPNG();
-      }
-    });
+        
+        bothBtn.innerHTML = '<span>⏳ Generating Back Side (2/2)...</span>';
+        await new Promise(r => setTimeout(r, 700));
+        await generateBackCardPNG();
+
+        bothBtn.innerHTML = '<span>✓ Both Sides Downloaded!</span>';
+        setTimeout(() => { bothBtn.innerHTML = originalText; }, 3000);
+      };
+    }
+
+    if (legacyBtn) {
+      legacyBtn.onclick = (e) => {
+        e.preventDefault();
+        if (bothBtn) bothBtn.click();
+        else handleFrontDownload(legacyBtn);
+      };
+    }
+  };
+
+  // Bind immediately and also on DOMContentLoaded
+  bindCardDownloadButtons();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bindCardDownloadButtons);
   }
 
   // vCard (.vcf) Generator for One-Tap Mobile Contact Saving

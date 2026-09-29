@@ -1,9 +1,11 @@
-const CACHE_NAME = 'afs-pwa-v2';
-const IMAGE_CACHE_NAME = 'afs-images-v2';
+const CACHE_NAME = 'afs-pwa-v3';
+const IMAGE_CACHE_NAME = 'afs-images-v3';
 const STATIC_ASSETS = [
   './',
   './index.html',
   './reviews.html',
+  './styles.css?v=2.3',
+  './script.js?v=2.3',
   './styles.css',
   './script.js',
   './manifest.json',
