@@ -1021,29 +1021,65 @@ _Technology Partner: MOMO IT TECHNOLOGIES_`;
   // 11. Progressive Web App (PWA) Engine & Install Experience
   // ====================================================
   
-  // A. Register Service Worker with Scope Verification
+  // A. Register Service Worker with Scope Verification & Localhost Bypass
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then((reg) => {
-          console.log('[AFS PWA] Service Worker registered successfully with scope:', reg.scope);
+    const isLocalhost = Boolean(
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '[::1]' ||
+      window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/)
+    );
 
-          // Listen for new service worker updates
-          reg.addEventListener('updatefound', () => {
-            const newWorker = reg.installing;
-            if (newWorker) {
-              newWorker.addEventListener('statechange', () => {
-                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  showNetworkToast('⚡ App updated! Refresh for the latest photography features.', 'online');
-                }
-              });
-            }
-          });
-        })
-        .catch((err) => {
-          console.warn('[AFS PWA] Service Worker registration failed:', err);
+    if (isLocalhost) {
+      // In development mode on localhost, unregister all service workers and purge caches
+      // so local code edits ALWAYS reflect immediately on refresh!
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        for (let registration of registrations) {
+          registration.unregister();
+        }
+      });
+      if ('caches' in window) {
+        caches.keys().then((keys) => {
+          keys.forEach((key) => caches.delete(key));
         });
-    });
+      }
+    } else {
+      // In production (Vercel / live domain): Register SW with auto-update
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then((reg) => {
+            console.log('[AFS PWA] Service Worker registered with scope:', reg.scope);
+
+            // Proactively check for service worker updates
+            reg.update();
+
+            // Listen for new service worker updates
+            reg.addEventListener('updatefound', () => {
+              const newWorker = reg.installing;
+              if (newWorker) {
+                newWorker.addEventListener('statechange', () => {
+                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    // Instruct new worker to activate immediately
+                    newWorker.postMessage({ type: 'SKIP_WAITING' });
+                    showNetworkToast('⚡ App updated to latest version!', 'online');
+                  }
+                });
+              }
+            });
+          })
+          .catch((err) => {
+            console.warn('[AFS PWA] Service Worker registration failed:', err);
+          });
+      });
+
+      // When the new service worker takes control, reload so updates reflect instantly
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
+      });
+    }
   }
 
   // B. PWA Installation Triggers & Banners

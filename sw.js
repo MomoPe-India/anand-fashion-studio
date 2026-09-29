@@ -1,11 +1,11 @@
-const CACHE_NAME = 'afs-pwa-v5';
-const IMAGE_CACHE_NAME = 'afs-images-v5';
+const CACHE_NAME = 'afs-pwa-v6';
+const IMAGE_CACHE_NAME = 'afs-images-v6';
 const STATIC_ASSETS = [
   './',
   './index.html',
   './reviews.html',
-  './styles.css?v=2.5',
-  './script.js?v=2.5',
+  './styles.css?v=2.6',
+  './script.js?v=2.6',
   './styles.css',
   './script.js',
   './manifest.json',
@@ -15,6 +15,13 @@ const STATIC_ASSETS = [
   './assets/icon-192-maskable.png',
   './assets/icon-512.png'
 ];
+
+// Message Event: Allow web clients to trigger immediate activation
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
 
 // Install Event: Pre-cache core shell
 self.addEventListener('install', (event) => {
@@ -41,7 +48,7 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch Event: Network-first for HTML, Cache-First for images, Stale-While-Revalidate for assets
+// Fetch Event: Network-first for HTML & Assets (instant live updates), Cache-First for media images
 self.addEventListener('fetch', (event) => {
   const request = event.request;
   const url = new URL(request.url);
@@ -92,22 +99,19 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 3. Static Assets: Cache-first with background network update (Stale-While-Revalidate)
+  // 3. Static Assets (CSS, JS, Fonts): Network-First with Cache Fallback for instant update visibility
   event.respondWith(
-    caches.match(request).then((cachedResponse) => {
-      const fetchPromise = fetch(request)
-        .then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            const clone = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-          }
-          return networkResponse;
-        })
-        .catch(() => {
-          // Fallback or silent catch for offline
-        });
-
-      return cachedResponse || fetchPromise;
-    })
+    fetch(request)
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const clone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+        }
+        return networkResponse;
+      })
+      .catch(() => {
+        // Fallback to cache if network is unavailable (offline mode)
+        return caches.match(request);
+      })
   );
 });
