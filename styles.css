@@ -149,7 +149,8 @@ dialog#lightboxModal[open]::backdrop {
    Luxury Digital Business Card Styles
    ---------------------------------------------------- */
 .visiting-card {
-  aspect-ratio: 1.75 / 1;
+  width: 100%;
+  min-height: 100%;
   background: linear-gradient(135deg, #0a0e17 0%, #05070c 50%, #0e1422 100%);
   border: 2px solid rgba(212, 175, 55, 0.6);
   box-shadow: 
@@ -159,6 +160,25 @@ dialog#lightboxModal[open]::backdrop {
   position: relative;
   overflow: hidden;
   transition: all 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.visiting-card::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 0.75rem;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@media (min-width: 1024px) {
+  .visiting-card {
+    min-height: 340px;
+  }
 }
 
 .visiting-card:hover {
