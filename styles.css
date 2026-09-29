@@ -221,3 +221,19 @@ dialog#lightboxModal[open]::backdrop {
   transform: translateY(-1px);
 }
 
+/* ----------------------------------------------------
+   Native Mobile App Bottom Dock & Safe Area Insets
+   ---------------------------------------------------- */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  nav[aria-label="Mobile Navigation"] {
+    padding-bottom: max(0.6rem, env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 639px) {
+  body {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+
