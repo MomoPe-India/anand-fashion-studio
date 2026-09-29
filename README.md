@@ -18,7 +18,7 @@ This website is built with lightweight, modern static architecture (HTML5, Tailw
 2. Go to **Workers & Pages** → **Create application** → **Pages** → **Upload assets**.
 3. Drag & drop this entire project folder (`index.html`, `styles.css`, `script.js`, `robots.txt`, `sitemap.xml`).
 4. Instant live URL: `anandfashionstudio.pages.dev` (Cost: **₹0**).
-5. Add custom domain (e.g. `anandfashionstudio.in`) under **Custom Domains** tab with 1-click free SSL.
+5. Add custom domain (e.g. `www.anandfashionstudio.in`) under **Custom Domains** tab with 1-click free SSL.
 
 ### Option B: Vercel
 1. Install Vercel CLI (`npm i -g vercel`) or upload to GitHub.

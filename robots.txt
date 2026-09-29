@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://anandfashionstudio.in/sitemap.xml
+Sitemap: https://www.anandfashionstudio.in/sitemap.xml

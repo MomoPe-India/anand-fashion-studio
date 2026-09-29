@@ -648,7 +648,7 @@ _Hello Anand Fashion Studio! I configured this custom wedding package on your we
       ctx.textAlign = 'center';
       ctx.fillStyle = '#D4AF37';
       ctx.font = 'bold 19px "Plus Jakarta Sans", Arial, sans-serif';
-      ctx.fillText('🌐 anandfashionstudio.in', 700, 725);
+      ctx.fillText('🌐 www.anandfashionstudio.in', 700, 725);
 
       ctx.textAlign = 'right';
       ctx.fillStyle = '#CBD5E1';
@@ -833,7 +833,7 @@ _Hello Anand Fashion Studio! I configured this custom wedding package on your we
 
       ctx.fillStyle = '#93C5FD';
       ctx.font = 'bold 18px "Plus Jakarta Sans", Arial, sans-serif';
-      ctx.fillText('https://anandfashionstudio.in', 760, 420);
+      ctx.fillText('https://www.anandfashionstudio.in', 760, 420);
 
       // Address
       ctx.fillStyle = '#D4AF37';
@@ -966,11 +966,11 @@ EMAIL;TYPE=INTERNET:anandfashionstudio@gmail.com
 TEL;TYPE=CELL,VOICE,PREF:+919246080201
 TEL;TYPE=WORK,VOICE:+919553545324
 ADR;TYPE=WORK:;;21/478, Palempapaiah Street, Opp. Sivaram Dum Biryani, Krishna Circle Road;Kadapa;Andhra Pradesh;516001;India
-URL;TYPE=WORK:https://anandfashionstudio.in
-URL:https://anandfashionstudio.in
+URL;TYPE=WORK:https://www.anandfashionstudio.in
+URL:https://www.anandfashionstudio.in
 URL;TYPE=Instagram:https://instagram.com/anand_fashion_studio_kdp
 X-SOCIALPROFILE;type=instagram:https://instagram.com/anand_fashion_studio_kdp
-NOTE:Managing Director: Anand Nallagatla. 14+ Years in Kadapa. Royal Wedding Photography, 4K Drone, Pre-Wedding Shoots & Custom Photo Framing. Instagram: @anand_fashion_studio_kdp | Website: anandfashionstudio.in | Tech Partner: MOMO IT TECHNOLOGIES.
+NOTE:Managing Director: Anand Nallagatla. 14+ Years in Kadapa. Royal Wedding Photography, 4K Drone, Pre-Wedding Shoots & Custom Photo Framing. Instagram: @anand_fashion_studio_kdp | Website: www.anandfashionstudio.in | Tech Partner: MOMO IT TECHNOLOGIES.
 END:VCARD`;
 
       const blob = new Blob([vCardContent], { type: 'text/vcard;charset=utf-8' });
