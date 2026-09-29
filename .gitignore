@@ -1,0 +1,20 @@
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Vercel Deployment & Build artifacts
+.vercel
+node_modules/
+dist/
+build/
+
+# Local Environment & Logs
+*.log
+.env
+.env.local
+.env.*.local

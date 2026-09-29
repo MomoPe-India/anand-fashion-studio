@@ -1,0 +1,63 @@
+{
+  "name": "Anand Fashion Studio Kadapa",
+  "short_name": "AFS Kadapa",
+  "description": "Royal Wedding Photography, 4K Drone Cinematography, Framing & Gifts in Kadapa. Managed by Anand Nallagatla.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#030407",
+  "theme_color": "#070A10",
+  "orientation": "any",
+  "lang": "en-IN",
+  "categories": ["photo", "lifestyle", "business"],
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "WhatsApp Enquiry",
+      "short_name": "WhatsApp",
+      "description": "Message Anand Fashion Studio directly on WhatsApp",
+      "url": "https://wa.me/919246080201",
+      "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Visiting Card",
+      "short_name": "Business Card",
+      "description": "Download Official Studio Business Card",
+      "url": "./index.html#business-card",
+      "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Customer Reviews",
+      "short_name": "Reviews",
+      "description": "Read verified 5-star customer reviews & ReviewSmart AI Hub",
+      "url": "./reviews.html",
+      "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Wedding Calculator",
+      "short_name": "Wedding Cost",
+      "description": "Calculate photography package budget",
+      "url": "./index.html#wedding-estimator",
+      "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

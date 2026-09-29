@@ -1,0 +1,193 @@
+/* ====================================================
+   Anand Fashion Studio - Luxury Dark Style
+   Matching Brand Emblem: Metallic Gold & Crimson Iris
+   ==================================================== */
+
+:root {
+  --color-gold: #D4AF37;
+  --color-gold-light: #FBF5B7;
+  --color-gold-dark: #875C08;
+  --color-ruby: #C1121F;
+  --color-ruby-dark: #780001;
+  --color-dark: #070A10;
+  --color-darker: #030407;
+  --color-card: #0D121D;
+  --color-card-hover: #131927;
+  --color-border: #1E2638;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+/* Custom Scrollbar matching Black & Gold */
+::-webkit-scrollbar {
+  width: 9px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-darker);
+}
+::-webkit-scrollbar-thumb {
+  background: #1e2638;
+  border-radius: 4px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #aa820a, #d4af37);
+}
+
+/* Focus Visible */
+*:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+/* Metallic Gold Gradient Text */
+.gold-metallic-text {
+  background: linear-gradient(135deg, #FFF1B0 0%, #D4AF37 35%, #F3E5AB 60%, #996515 85%, #AA820A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Ruby Red Shutter Accent */
+.ruby-shutter-badge {
+  background: linear-gradient(135deg, rgba(193, 18, 31, 0.2) 0%, rgba(120, 0, 1, 0.4) 100%);
+  border: 1px solid rgba(217, 4, 41, 0.4);
+  color: #ff8591;
+}
+
+/* Luxury Card Hover Micro-Glow with subtle Ruby & Gold reflections */
+.luxury-card {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+.luxury-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.3) 0%, transparent 40%, rgba(193, 18, 31, 0.2) 100%);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.luxury-card:hover {
+  transform: translateY(-5px);
+  background-color: var(--color-card-hover);
+  border-color: rgba(212, 175, 55, 0.4);
+  box-shadow: 
+    0 16px 35px -10px rgba(0, 0, 0, 0.8),
+    0 0 25px -5px rgba(212, 175, 55, 0.15);
+}
+.luxury-card:hover::before {
+  opacity: 1;
+}
+
+/* Logo Circular Halo Glow */
+.logo-halo {
+  box-shadow: 
+    0 0 20px rgba(212, 175, 55, 0.35),
+    0 0 40px rgba(193, 18, 31, 0.2),
+    inset 0 0 15px rgba(0, 0, 0, 0.8);
+}
+
+/* Atmospheric Bokeh & Radial Lights */
+.hero-glow-gold {
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.12) 0%, transparent 70%);
+}
+.hero-glow-ruby {
+  background: radial-gradient(circle, rgba(193, 18, 31, 0.10) 0%, transparent 70%);
+}
+
+/* Native HTML5 Dialog / Lightbox */
+dialog#lightboxModal {
+  margin: auto;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.25s ease-out, transform 0.25s ease-out, display 0.25s allow-discrete;
+}
+dialog#lightboxModal[open] {
+  opacity: 1;
+  transform: scale(1);
+}
+@starting-style {
+  dialog#lightboxModal[open] {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+dialog#lightboxModal::backdrop {
+  background: rgba(3, 4, 7, 0.92);
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  transition: opacity 0.25s ease-out;
+}
+dialog#lightboxModal[open]::backdrop {
+  opacity: 1;
+}
+@starting-style {
+  dialog#lightboxModal[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+/* Gallery Optimization */
+.gallery-item {
+  content-visibility: auto;
+  contain-intrinsic-size: 320px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.gallery-item.hidden-item {
+  display: none !important;
+}
+
+
+/* ----------------------------------------------------
+   Luxury Digital Business Card Styles
+   ---------------------------------------------------- */
+.visiting-card {
+  aspect-ratio: 1.75 / 1;
+  background: linear-gradient(135deg, #0a0e17 0%, #05070c 50%, #0e1422 100%);
+  border: 2px solid rgba(212, 175, 55, 0.6);
+  box-shadow: 
+    0 20px 50px -10px rgba(0, 0, 0, 0.9),
+    0 0 30px rgba(212, 175, 55, 0.25),
+    inset 0 0 20px rgba(0, 0, 0, 0.8);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+
+.visiting-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 
+    0 25px 60px -10px rgba(0, 0, 0, 0.95),
+    0 0 40px rgba(212, 175, 55, 0.35);
+  border-color: rgba(212, 175, 55, 0.9);
+}
+
+.visiting-card::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* Technology Partner Badge */
+.tech-partner-card {
+  background: linear-gradient(135deg, rgba(13, 18, 29, 0.9) 0%, rgba(7, 10, 16, 0.95) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  transition: all 0.3s ease;
+}
+.tech-partner-card:hover {
+  border-color: var(--color-gold);
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.25);
+  transform: translateY(-2px);
+}
