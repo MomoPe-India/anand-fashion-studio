@@ -1206,8 +1206,15 @@ _Technology Partner: MOMO IT TECHNOLOGIES_`;
       // Also update any other Instagram buttons on page
       document.querySelectorAll('[data-action="instagram-follow"]').forEach((btn) => {
         if (btn !== followBtn) {
-          const badge = btn.querySelector('span:last-child');
-          if (badge) badge.textContent = '✓ Following';
+          if (btn.classList.contains('mobile-tab-btn')) {
+            const dot = btn.querySelector('#tab-ig-dot');
+            if (dot) {
+              dot.className = 'absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)] animate-pulse';
+            }
+          } else {
+            const badge = btn.querySelector('span:last-child');
+            if (badge) badge.textContent = '✓ Following';
+          }
         }
       });
     }
@@ -1269,6 +1276,31 @@ _Technology Partner: MOMO IT TECHNOLOGIES_`;
   document.querySelectorAll('[data-action="instagram-follow"]').forEach((btn) => {
     btn.addEventListener('click', openInstagramProfile);
   });
+
+  // 17. Mobile Bottom Navigation Active Tab Scroll-Spy
+  const tabHome = document.getElementById('tab-home');
+  const tabPackages = document.getElementById('tab-packages');
+  const estimatorSection = document.getElementById('wedding-estimator');
+
+  if (tabHome && tabPackages && estimatorSection) {
+    const updateActiveTab = () => {
+      const rect = estimatorSection.getBoundingClientRect();
+      const inEstimator = rect.top <= 250 && rect.bottom >= 150;
+      if (inEstimator) {
+        tabPackages.classList.add('active', 'text-brand-gold', 'font-bold');
+        tabPackages.classList.remove('text-slate-400');
+        tabHome.classList.remove('active', 'text-brand-gold', 'font-bold');
+        tabHome.classList.add('text-slate-400');
+      } else if (window.scrollY < 400) {
+        tabHome.classList.add('active', 'text-brand-gold', 'font-bold');
+        tabHome.classList.remove('text-slate-400');
+        tabPackages.classList.remove('active', 'text-brand-gold', 'font-bold');
+        tabPackages.classList.add('text-slate-400');
+      }
+    };
+
+    window.addEventListener('scroll', updateActiveTab, { passive: true });
+  }
 
 });
 
