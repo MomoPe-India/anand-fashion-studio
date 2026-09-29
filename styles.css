@@ -191,3 +191,33 @@ dialog#lightboxModal[open]::backdrop {
   box-shadow: 0 0 25px rgba(212, 175, 55, 0.25);
   transform: translateY(-2px);
 }
+
+/* ----------------------------------------------------
+   1-Tap Instagram Follower Growth Hub Styles
+   ---------------------------------------------------- */
+.ig-story-ring {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  animation: igPulse 3s ease-in-out infinite;
+}
+
+@keyframes igPulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(220, 39, 67, 0.4), 0 0 30px rgba(188, 24, 136, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(240, 148, 51, 0.6), 0 0 45px rgba(220, 39, 67, 0.4);
+  }
+}
+
+.ig-btn-gradient {
+  background: linear-gradient(90deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  background-size: 200% auto;
+  transition: all 0.3s ease;
+}
+
+.ig-btn-gradient:hover {
+  background-position: right center;
+  box-shadow: 0 10px 25px -5px rgba(220, 39, 67, 0.5);
+  transform: translateY(-1px);
+}
+

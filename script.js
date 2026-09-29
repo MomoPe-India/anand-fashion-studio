@@ -603,7 +603,9 @@ TEL;TYPE=WORK,VOICE:+919553545324
 ADR;TYPE=WORK:;;21/478, Palempapaiah Street, Opp. Sivaram Dum Biryani, Krishna Circle Road;Kadapa;Andhra Pradesh;516001;India
 URL;TYPE=WORK:https://anandfashionstudio.in
 URL:https://anandfashionstudio.in
-NOTE:Managing Director: Anand Nallagatla. 14+ Years in Kadapa. Royal Wedding Photography, 4K Drone, Pre-Wedding Shoots & Custom Photo Framing. Website: anandfashionstudio.in | Tech Partner: MOMO IT TECHNOLOGIES.
+URL;TYPE=Instagram:https://instagram.com/anand_fashion_studio_kdp
+X-SOCIALPROFILE;type=instagram:https://instagram.com/anand_fashion_studio_kdp
+NOTE:Managing Director: Anand Nallagatla. 14+ Years in Kadapa. Royal Wedding Photography, 4K Drone, Pre-Wedding Shoots & Custom Photo Framing. Instagram: @anand_fashion_studio_kdp | Website: anandfashionstudio.in | Tech Partner: MOMO IT TECHNOLOGIES.
 END:VCARD`;
 
       const blob = new Blob([vCardContent], { type: 'text/vcard;charset=utf-8' });
@@ -812,6 +814,46 @@ _Technology Partner: MOMO IT TECHNOLOGIES_`;
 
   window.addEventListener('offline', () => {
     showNetworkToast('⚠️ You are offline. Cached portfolio & contact info remain available!', 'offline');
+  });
+
+  // D. 1-Tap Instagram Smart Follow Launcher (iOS, Android, Desktop)
+  const openInstagramProfile = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    const username = 'anand_fashion_studio_kdp';
+    const webUrl = `https://www.instagram.com/${username}/`;
+    const appUri = `instagram://user?username=${username}`;
+    const ua = (navigator.userAgent || navigator.vendor || window.opera || '').toLowerCase();
+    const isMobile = /android|iphone|ipad|ipod/i.test(ua);
+
+    if (isMobile) {
+      const isAndroid = /android/i.test(ua);
+      const isIos = /iphone|ipad|ipod/i.test(ua);
+
+      if (isAndroid) {
+        // Android Intent directed at official Instagram app with fallback to web
+        const intentUrl = `intent://instagram.com/_u/${username}/#Intent;package=com.instagram.android;scheme=https;end`;
+        window.location.href = intentUrl;
+      } else if (isIos) {
+        // iOS Safari deep link with 600ms fallback to web URL
+        const start = Date.now();
+        window.location.href = appUri;
+        setTimeout(() => {
+          if (Date.now() - start < 1200) {
+            window.location.href = webUrl;
+          }
+        }, 600);
+      } else {
+        window.location.href = appUri;
+      }
+    } else {
+      // Desktop: Open clean web profile in new tab
+      window.open(webUrl, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  // Attach click listener to all 1-tap Instagram follow buttons & links
+  document.querySelectorAll('[data-action="instagram-follow"]').forEach((btn) => {
+    btn.addEventListener('click', openInstagramProfile);
   });
 
 });
